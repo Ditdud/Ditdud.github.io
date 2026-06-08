@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="lv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Izlaiduma Pārsteigums</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #121212;
+            color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            text-align: center;
+        }
+        .container {
+            background-color: #1e1e1e;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            max-width: 400px;
+            width: 90%;
+        }
+        input[type="text"] {
+            width: 80%;
+            padding: 10px;
+            margin: 15px 0;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover { background-color: #45a049; }
+        .hidden { display: none; }
+        .error { color: #ff6b6b; font-size: 14px; margin-top: 5px; }
+        img { max-width: 100%; border-radius: 5px; margin-top: 15px; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div id="login-screen">
+            <h2>Ievadi atbildi:</h2>
+            <input type="text" id="answer-input" placeholder="Tavs minējums...">
+            <br>
+            <button onclick="checkAnswer()">Pārbaudīt</button>
+            <p id="error-msg" class="error"></p>
+        </div>
+
+        <div id="secret-screen" class="hidden">
+            <h2>Apsveicam! 🎉</h2>
+            <p>Tu uzminēji pareizo vārdu.</p>
+            <p>Šeit ir tavs apraksts vai novēlējums izlaidumā...</p>
+            <img src="bilde.jpg" alt="Izlaiduma bilde">
+        </div>
+    </div>
+
+    <script>
+        function checkAnswer() {
+            const input = document.getElementById('answer-input').value;
+            const errorMsg = document.getElementById('error-msg');
+            
+            // This function removes Latvian accents so "šūpuļkrēsls" and "supulkresls" both work
+            const cleanString = (str) => {
+                return str.toLowerCase()
+                          .trim()
+                          .normalize("NFD")
+                          .replace(/[\u0300-\u036f]/g, "") // removes accents
+                          .replace(/ļ/g, "l")             // manual fallback for specific Latvian chars
+                          .replace(/ģ/g, "g")
+                          .replace(/ķ/g, "k")
+                          .replace(/ņ/g, "n")
+                          .replace(/č/g, "c")
+                          .replace(/š/g, "s")
+                          .replace(/ž/g, "z");
+            };
+
+            if (cleanString(input) === "supulkresls") {
+                // Hide guessing screen, show the reward
+                document.getElementById('login-screen').classList.add('hidden');
+                document.getElementById('secret-screen').classList.remove('hidden');
+            } else {
+                errorMsg.innerText = "Nepareiza atbilde! Mēģini vēlreiz.";
+            }
+        }
+    </script>
+</body>
+</html>
