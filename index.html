@@ -3,97 +3,241 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Izlaiduma Pārsteigums</title>
+    <title>Uzmini dāvanu!</title>
+    <!-- Confetti Library -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
+        /* 
+         Background setup. 
+         Replace 'skolas-bilde.jpg' with the actual school background image file name. 
+        */
         body {
-            font-family: Arial, sans-serif;
-            background-color: #121212;
-            color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
             margin: 0;
-            text-align: center;
+            background-color: #333;
+            background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('skolas-bilde.jpg');
+            background-size: cover;
+            background-position: center;
+            color: #333;
         }
+
         .container {
-            background-color: #1e1e1e;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-            max-width: 400px;
+            background: white;
+            padding: 2.5rem 2rem;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            text-align: center;
+            max-width: 450px;
             width: 90%;
+            border-top: 6px solid #651111; /* School accent color */
         }
-        input[type="text"] {
-            width: 80%;
-            padding: 10px;
+
+        h2 {
+            margin-top: 0;
+            color: #651111; /* School accent color */
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        input {
+            padding: 12px;
             margin: 15px 0;
-            border: none;
-            border-radius: 5px;
-            font-size: 16px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            width: 80%;
+            font-size: 18px;
+            text-align: center;
+            letter-spacing: 3px; /* Keeps the crossword feel */
+            outline: none;
+            transition: border-color 0.3s;
         }
+
+        input:focus {
+            border-color: #651111;
+        }
+
         button {
-            padding: 10px 20px;
-            background-color: #4CAF50;
+            padding: 12px 24px;
+            background-color: #651111; /* School accent color */
             color: white;
             border: none;
-            border-radius: 5px;
+            border-radius: 6px;
             cursor: pointer;
             font-size: 16px;
+            font-weight: bold;
+            transition: background-color 0.2s, transform 0.1s;
+            width: 85%;
         }
-        button:hover { background-color: #45a049; }
-        .hidden { display: none; }
-        .error { color: #ff6b6b; font-size: 14px; margin-top: 5px; }
-        img { max-width: 100%; border-radius: 5px; margin-top: 15px; }
+
+        button:hover {
+            background-color: #4a0c0c;
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        .error {
+            color: #d9534f;
+            font-size: 14px;
+            font-weight: bold;
+            display: none;
+            margin-top: 15px;
+        }
+
+        .hint {
+            color: #555;
+            font-size: 14px;
+            font-style: italic;
+            margin-top: 10px;
+            min-height: 20px;
+        }
+
+        #page2 {
+            display: none;
+        }
+
+        .gift-image {
+            width: 100%;
+            max-width: 300px;
+            height: auto;
+            border-radius: 8px;
+            margin: 20px 0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .description {
+            font-size: 16px;
+            line-height: 1.5;
+            color: #444;
+        }
+
+        .highlight {
+            color: #651111;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <div id="login-screen">
-            <h2>Ievadi atbildi:</h2>
-            <input type="text" id="answer-input" placeholder="Tavs minējums...">
-            <br>
-            <button onclick="checkAnswer()">Pārbaudīt</button>
-            <p id="error-msg" class="error"></p>
-        </div>
+    <!-- Pirmaa lapa -->
+    <div class="container" id="page1">
+        <h2>Uzmini dāvanu!</h2>
+        <div class="subtitle">Ievadi krustvārdu mīklas atbildi</div>
+        
+        <input type="text" id="answerInput" placeholder="*******" autocomplete="off" autofocus>
+        <br>
+        <button onclick="checkAnswer()">Pārbaudīt</button>
+        
+        <div id="errorMsg" class="error">Mēģini vēlreiz!</div>
+        <div id="hintMsg" class="hint"></div>
+    </div>
 
-        <div id="secret-screen" class="hidden">
-            <h2>Apsveicam! 🎉</h2>
-            <p>Tu uzminēji pareizo vārdu.</p>
-            <p>Šeit ir tavs apraksts vai novēlējums izlaidumā...</p>
-            <img src="bilde.jpg" alt="Izlaiduma bilde">
-        </div>
+    <!-- Naakamaa lapa -->
+    <div class="container" id="page2">
+        <h2>Apsveicam! 🎉</h2>
+        
+        <img src="chair.png" alt="EGG-3 Brūns Šūpuļkrēsls" class="gift-image">
+        
+        <p class="description">
+            Tava dāvana ir brīnišķīgs un ērts <span class="highlight">šūpuļkrēsls EGG-3</span> brūnā krāsā!<br><br>
+            Ideāla vieta, kur ieritināties, atpūsties pēc garas dienas, lasīt grāmatu vai vienkārši baudīt mieru.
+        </p>
     </div>
 
     <script>
-        function checkAnswer() {
-            const input = document.getElementById('answer-input').value;
-            const errorMsg = document.getElementById('error-msg');
-            
-            // This function removes Latvian accents so "šūpuļkrēsls" and "supulkresls" both work
-            const cleanString = (str) => {
-                return str.toLowerCase()
-                          .trim()
-                          .normalize("NFD")
-                          .replace(/[\u0300-\u036f]/g, "") // removes accents
-                          .replace(/ļ/g, "l")             // manual fallback for specific Latvian chars
-                          .replace(/ģ/g, "g")
-                          .replace(/ķ/g, "k")
-                          .replace(/ņ/g, "n")
-                          .replace(/č/g, "c")
-                          .replace(/š/g, "s")
-                          .replace(/ž/g, "z");
-            };
+        let attemptCount = 0;
+        
+        // Progressive hints array
+        const hints = [
+            "Mājiens: Tā ir mēbele.",
+            "Mājiens: Tas ir paredzēts sēdēšanai.",
+            "Mājiens: Tam nav četru kāju.",
+            "Mājiens: Tas kustas.",
+            "Mājiens: Tajā vecmāmiņa sēž, kad ada zeķes.",
+            "Mājiens: Tā nosaukums ir saliktenis – kustība un mēbele."
+        ];
 
-            if (cleanString(input) === "supulkresls") {
-                // Hide guessing screen, show the reward
-                document.getElementById('login-screen').classList.add('hidden');
-                document.getElementById('secret-screen').classList.remove('hidden');
+        function checkAnswer() {
+            const input = document.getElementById('answerInput').value.trim().toLowerCase();
+            const errorMsg = document.getElementById('errorMsg');
+            const hintMsg = document.getElementById('hintMsg');
+            const page1 = document.getElementById('page1');
+            const page2 = document.getElementById('page2');
+
+            // Correct answers
+            if (input === 'supulkresls' || input === 'šūpuļkrēsls') {
+                page1.style.display = 'none';
+                page2.style.display = 'block';
+                
+                // Trigger Confetti Animation
+                fireConfetti();
+                
             } else {
-                errorMsg.innerText = "Nepareiza atbilde! Mēģini vēlreiz.";
+                // Wrong answer logic
+                errorMsg.style.display = 'block';
+                
+                // Show progressive hints based on attempts
+                if (attemptCount < hints.length) {
+                    hintMsg.textContent = hints[attemptCount];
+                } else {
+                    hintMsg.textContent = hints[hints.length - 1]; // Keep showing the last hint
+                }
+                
+                attemptCount++;
+                
+                // Add a small shake effect to the input
+                const inputField = document.getElementById('answerInput');
+                inputField.style.transform = "translateX(-5px)";
+                setTimeout(() => inputField.style.transform = "translateX(5px)", 50);
+                setTimeout(() => inputField.style.transform = "translateX(0)", 100);
             }
         }
+
+        // Allow pressing 'Enter' to submit
+        document.getElementById('answerInput').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                checkAnswer();
+            }
+        });
+
+        // Confetti function
+        function fireConfetti() {
+            var duration = 3000;
+            var end = Date.now() + duration;
+
+            (function frame() {
+                confetti({
+                    particleCount: 5,
+                    angle: 60,
+                    spread: 55,
+                    origin: { x: 0 },
+                    colors: ['#651111', '#ffffff', '#ffd700'] // School color + white + gold
+                });
+                confetti({
+                    particleCount: 5,
+                    angle: 120,
+                    spread: 55,
+                    origin: { x: 1 },
+                    colors: ['#651111', '#ffffff', '#ffd700']
+                });
+
+                if (Date.now() < end) {
+                    requestAnimationFrame(frame);
+                }
+            }());
+        }
     </script>
+
 </body>
 </html>
